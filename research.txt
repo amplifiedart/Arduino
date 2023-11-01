@@ -1,0 +1,31 @@
+Research for automating animation with a Wemos D1 mini
+
+Operational Parameters
+1. Hardware WEMOS D1 mini with 8 NeoPixel rings consisting of 120 NeoPixels (RGB) LEDs. WS2812. 
+
+Problem statement
+The WEMOS D1 mini has limited memory and the amount of frames we want to store may be large. Possible solution is to use a SD Card on which we can store the needed data (Reading will cost additional code space limiting the memory capacity). 
+
+Simple implementation
+Store the frames in files on the SD card. Place a menu list with possible animations on the SD Card.
+
+SD Storage structure
+/
+	Menu.lst		File consisting of the menu item and associated filename
+	Filename.anim		Animation file that will be available
+	File2.anim		Another animation file.
+
+Menu.lst format
+Filename.anim|Menu Title
+File2.anim|Second Menu Item
+
+Anim File format
+Byte Array of 4 x 120 bytes, each group of 4 is build as follows:
+[R][G][B][C] Where each byte provides the following:
+R	Red component of the Led
+G	Green component of the Led
+B	Blue component of the Led 
+C	Control, allowing commands to be incorporated. Currently to be designed and will have the value 0.
+
+
+

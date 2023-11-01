@@ -30,6 +30,12 @@
         {
             colorDialog1 = new ColorDialog();
             LeftPanel = new Panel();
+            FrameLabel = new Label();
+            NextFrameButton = new Button();
+            PreviousFrameButton = new Button();
+            FillButton = new Button();
+            ClearButton = new Button();
+            DebugLabel = new Label();
             SelectedColorLabel = new Label();
             BlueValue = new Label();
             GreenValue = new Label();
@@ -41,15 +47,21 @@
             GreenSlider = new TrackBar();
             RedSlider = new TrackBar();
             MainPanel = new Panel();
-            DebugLabel = new Label();
+            panel1 = new Panel();
             LeftPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)BlueSlider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)GreenSlider).BeginInit();
             ((System.ComponentModel.ISupportInitialize)RedSlider).BeginInit();
+            MainPanel.SuspendLayout();
             SuspendLayout();
             // 
             // LeftPanel
             // 
+            LeftPanel.Controls.Add(FrameLabel);
+            LeftPanel.Controls.Add(NextFrameButton);
+            LeftPanel.Controls.Add(PreviousFrameButton);
+            LeftPanel.Controls.Add(FillButton);
+            LeftPanel.Controls.Add(ClearButton);
             LeftPanel.Controls.Add(DebugLabel);
             LeftPanel.Controls.Add(SelectedColorLabel);
             LeftPanel.Controls.Add(BlueValue);
@@ -66,8 +78,69 @@
             LeftPanel.MaximumSize = new Size(400, 0);
             LeftPanel.MinimumSize = new Size(200, 0);
             LeftPanel.Name = "LeftPanel";
-            LeftPanel.Size = new Size(200, 792);
+            LeftPanel.Size = new Size(200, 902);
             LeftPanel.TabIndex = 1;
+            // 
+            // FrameLabel
+            // 
+            FrameLabel.Location = new Point(62, 816);
+            FrameLabel.Name = "FrameLabel";
+            FrameLabel.Size = new Size(71, 26);
+            FrameLabel.TabIndex = 9;
+            FrameLabel.Text = "0";
+            FrameLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // NextFrameButton
+            // 
+            NextFrameButton.ForeColor = Color.Black;
+            NextFrameButton.Location = new Point(135, 812);
+            NextFrameButton.Name = "NextFrameButton";
+            NextFrameButton.Size = new Size(29, 30);
+            NextFrameButton.TabIndex = 8;
+            NextFrameButton.Text = ">";
+            NextFrameButton.UseVisualStyleBackColor = true;
+            // 
+            // PreviousFrameButton
+            // 
+            PreviousFrameButton.ForeColor = Color.Black;
+            PreviousFrameButton.Location = new Point(28, 812);
+            PreviousFrameButton.Name = "PreviousFrameButton";
+            PreviousFrameButton.Size = new Size(29, 30);
+            PreviousFrameButton.TabIndex = 8;
+            PreviousFrameButton.Text = "<";
+            PreviousFrameButton.UseVisualStyleBackColor = true;
+            // 
+            // FillButton
+            // 
+            FillButton.ForeColor = Color.Black;
+            FillButton.Location = new Point(28, 777);
+            FillButton.Name = "FillButton";
+            FillButton.Size = new Size(136, 29);
+            FillButton.TabIndex = 7;
+            FillButton.Text = "Fill";
+            FillButton.UseVisualStyleBackColor = true;
+            FillButton.Click += FillButton_Click;
+            // 
+            // ClearButton
+            // 
+            ClearButton.ForeColor = Color.Black;
+            ClearButton.Location = new Point(28, 742);
+            ClearButton.Name = "ClearButton";
+            ClearButton.Size = new Size(136, 29);
+            ClearButton.TabIndex = 7;
+            ClearButton.Text = "Clear";
+            ClearButton.UseVisualStyleBackColor = true;
+            ClearButton.Click += ClearButton_Click;
+            // 
+            // DebugLabel
+            // 
+            DebugLabel.BorderStyle = BorderStyle.Fixed3D;
+            DebugLabel.Location = new Point(30, 678);
+            DebugLabel.Name = "DebugLabel";
+            DebugLabel.Size = new Size(132, 46);
+            DebugLabel.TabIndex = 6;
+            DebugLabel.Text = "label1";
+            DebugLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // SelectedColorLabel
             // 
@@ -165,30 +238,31 @@
             // 
             // MainPanel
             // 
+            MainPanel.Controls.Add(panel1);
             MainPanel.Dock = DockStyle.Fill;
             MainPanel.Location = new Point(200, 0);
             MainPanel.Name = "MainPanel";
-            MainPanel.Size = new Size(1013, 792);
+            MainPanel.Size = new Size(1013, 902);
             MainPanel.TabIndex = 2;
             MainPanel.Paint += MainPanel_Paint;
-            MainPanel.MouseMove += MainPanel_MouseMove;
+            MainPanel.MouseDown += MainPanel_MouseDown;
+            MainPanel.MouseMove += MainPanel_MouseDown;
             // 
-            // DebugLabel
+            // panel1
             // 
-            DebugLabel.BorderStyle = BorderStyle.Fixed3D;
-            DebugLabel.Location = new Point(30, 678);
-            DebugLabel.Name = "DebugLabel";
-            DebugLabel.Size = new Size(132, 60);
-            DebugLabel.TabIndex = 6;
-            DebugLabel.Text = "label1";
-            DebugLabel.TextAlign = ContentAlignment.MiddleCenter;
+            panel1.BackColor = Color.DimGray;
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(0, 742);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1013, 160);
+            panel1.TabIndex = 0;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
-            ClientSize = new Size(1213, 792);
+            ClientSize = new Size(1213, 902);
             Controls.Add(MainPanel);
             Controls.Add(LeftPanel);
             ForeColor = Color.White;
@@ -200,6 +274,7 @@
             ((System.ComponentModel.ISupportInitialize)BlueSlider).EndInit();
             ((System.ComponentModel.ISupportInitialize)GreenSlider).EndInit();
             ((System.ComponentModel.ISupportInitialize)RedSlider).EndInit();
+            MainPanel.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -219,5 +294,11 @@
         private Label GreenValue;
         private Label RedValue;
         private Label DebugLabel;
+        private Label FrameLabel;
+        private Button NextFrameButton;
+        private Button PreviousFrameButton;
+        private Button FillButton;
+        private Button ClearButton;
+        private Panel panel1;
     }
 }

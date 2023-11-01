@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Drawing;
+using System.Numerics;
 
 namespace LedAnimator
 {
@@ -29,6 +31,7 @@ namespace LedAnimator
 
         private void MainPanel_Paint(object sender, PaintEventArgs e)
         {
+            MainPanel.SuspendLayout();
             for (int i = 0; i < colors.Count; i++)
             {
                 Point coord = GetPosition(i);
@@ -38,6 +41,7 @@ namespace LedAnimator
                 e.Graphics.DrawString(i.ToString(), this.Font, Brushes.White, coord.X, coord.Y);
 #endif
             }
+            MainPanel.ResumeLayout();
         }
 
         private Point GetPosition(int ledno)
@@ -101,21 +105,22 @@ namespace LedAnimator
             SelectedColorLabel.BackColor = selected;
         }
 
-        private void MainPanel_MouseMove(object sender, MouseEventArgs e)
+        private void MainPanel_MouseDown(object sender, MouseEventArgs e)
         {
             int ledno = GetLedNumber(e.X, e.Y);
 
-            DebugLabel.Text = string.Format("{0}, {1}\r\nLED: {2}", e.X, e.Y, ledno);
-
             if (ledno > -1)
             {
+                DebugLabel.Text = string.Format("{0}, {1}\r\nLED: {2}", e.X, e.Y, ledno);
+                Color color = Color.FromArgb(RedSlider.Value, GreenSlider.Value, BlueSlider.Value);
+
                 switch (e.Button)
                 {
-                    case MouseButtons.Left:
-                        colors[ledno] = Color.Black;
-                        break;
                     case MouseButtons.Right:
-                        colors[ledno] = Color.FromArgb(RedSlider.Value, GreenSlider.Value, BlueSlider.Value);
+                        SetColor(ledno, Color.Black);
+                        break;
+                    case MouseButtons.Left:
+                        SetColor(ledno, color);
                         break;
                     case MouseButtons.Middle:
                         break;
@@ -125,9 +130,83 @@ namespace LedAnimator
             }
         }
 
+        private void SetColor(int ledno, Color color)
+        {
+            if (colors[ledno] != color)
+            {
+                colors[ledno] = color;
+
+                Point point = GetPosition(ledno);
+                MainPanel.Invalidate(new Rectangle(point.X, point.Y, 32, 32));
+                MainPanel.Update();
+
+            }
+        }
+
         private int GetLedNumber(int x, int y)
         {
-            return -1;
+            int result = -1;
+            Vector2 center = new Vector2(x < 550 ? 250f : 850f, 300f);
+            Vector2 end = new Vector2(x, y);
+
+            float angle = GetAngle(center, end);
+            float distance = (float)Math.Sqrt(MathF.Pow(end.X - center.X, 2) + MathF.Pow(end.Y - center.Y, 2));
+
+            if (x > 550) angle += 180f;
+            if (distance < 220)
+            {
+                if (distance > 180)
+                {
+                    angle = (angle + 97.5f) % 360;
+                    result = (int)(angle / 15f);
+                }
+                else if (distance > 140)
+                {
+                    angle = (angle + 101.25f) % 360;
+                    result = (int)(angle / 22.5f) + 24;
+                }
+                else if (distance > 100)
+                {
+                    angle = (angle + 105f) % 360;
+                    result = (int)(angle / 30f) + 40;
+                }
+                else if (distance > 60)
+                {
+                    angle = (angle + 112.5f) % 360;
+                    result = (int)(angle / 45f) + 52;
+                }
+            }
+            if (x > 550) result += 60;
+            DebugLabel.Text = string.Format("{0} - {1}\r\n{2}", angle, distance, result);
+
+            return result;
+        }
+
+        public static float GetAngle(Vector2 point, Vector2 center)
+        {
+            Vector2 relPoint = point - center;
+            return (ToDegrees(MathF.Atan2((float)relPoint.Y, (float)relPoint.X)) + 450f) % 360f;
+        }
+
+        public static float ToDegrees(float radians) => radians * 180f / MathF.PI;
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < pixels; i++)
+                colors[i] = Color.Black;
+
+            MainPanel.Invalidate();
+            MainPanel.Update();
+        }
+
+        private void FillButton_Click(object sender, EventArgs e)
+        {
+            Color color = Color.FromArgb(RedSlider.Value, GreenSlider.Value, BlueSlider.Value);
+            for (int i = 0; i < pixels; i++)
+                colors[i] = color;
+
+            MainPanel.Invalidate();
+            MainPanel.Update();
         }
     }
 }
